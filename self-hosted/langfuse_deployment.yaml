@@ -1,0 +1,41 @@
+# This is the start of the deployment manifest
+# They are looking for  Kubernetes deployment, Kubernetes service, Secret configs and DB config via env variables
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: langfuse-deployment
+  labels:
+    app: langfuse
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: langfuse
+  template:
+    metadata:
+      name: langfuse-pod
+      labels:
+        app: langfuse
+    spec:
+      containers:
+      - image: ghcr.io/langfuse/langfuse:latest # It is not recommended to use the "latest" tag in production, you can find the "sha-xxx" tag here: https://github.com/langfuse/langfuse/pkgs/container/langfuse/versions?filters%5Bversion_type%5D=tagged
+        name: langfuse-container
+        env:
+---
+apiVersion: v1
+kind: ClusterIP
+metadata:
+  name: langfuse-clusterip
+  labels:
+    app: langfuse
+spec:
+  ports:
+  - name:
+  selector:
+    app: langfuse
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: langfuse-secret
+spec:
